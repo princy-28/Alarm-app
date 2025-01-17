@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Counting Timer with Alarm</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            background-color: #f8f9fa;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 500px;
+            margin-top: 50px;
+            padding: 20px;
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        
+        .form-group {
+            margin-bottom: 15px;
+        }
+        
+        #countResult {
+            margin-top: 20px;
+            font-size: 1.5rem;
+            font-weight: bold;
+            text-align: center;
+        }
+        
+        #countBtn {
+            margin-top: 20px;
+        }
+        
+        #alarm {
+            display: none;
+        }
+        
+        #stopBtn {
+            display: none;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <h2 class="text-center">Counting Timer with Alarm</h2>
+        <form id="countForm">
+            <!-- Number Input -->
+            <div class="form-group">
+                <label for="countNumber">Enter a number to count up to:</label>
+                <input type="number" id="countNumber" class="form-control" placeholder="Enter a number" required>
+            </div>
+
+            <!-- Start Button -->
+            <button type="button" id="countBtn" class="btn btn-primary w-100" onclick="startCounting()">Start Counting</button>
+        </form>
+
+        <!-- Counting Result -->
+        <div id="countResult"></div>
+
+        <!-- Hidden alarm audio element -->
+        <audio id="alarm" src="alarm.mp3" preload="auto"></audio>
+
+        <!-- Stop Sound Button (Initially hidden) -->
+        <button type="button" id="stopBtn" class="btn btn-danger w-100" onclick="stopSound()">Stop Sound</button>
+    </div>
+
+    <script>
+        // Function to play alarm sound
+        function playAlarm() {
+            const alarmSound = document.getElementById("alarm");
+            alarmSound.play(); // Play the alarm sound
+
+            // Show the Stop Sound button after the alarm starts playing
+            document.getElementById("stopBtn").style.display = "block";
+        }
+
+        // Function to stop the alarm sound
+        function stopSound() {
+            const alarmSound = document.getElementById("alarm");
+            alarmSound.pause(); // Stop the alarm sound
+            alarmSound.currentTime = 0; // Reset the sound to the beginning
+
+            // Hide the Stop Sound button once the sound is stopped
+            document.getElementById("stopBtn").style.display = "none";
+        }
+
+        // Function to start the counting process
+        function startCounting() {
+            const countNumber = document.getElementById("countNumber").value;
+            const countResult = document.getElementById("countResult");
+
+            // Clear any previous result
+            countResult.innerHTML = "";
+
+            if (countNumber) {
+                let result = "";
+                let count = 1;
+
+                // Use a setInterval to create a timer that counts up to the entered number
+                const interval = setInterval(function() {
+                    result += `${count} <br>`; // Add the current count number to the result
+                    countResult.innerHTML = result; // Display the updated result
+                    count++; // Increase the count by 1
+
+                    // Stop the counting when it reaches the entered number
+                    if (count > countNumber) {
+                        clearInterval(interval); // Stop the timer
+                        countResult.innerHTML += "Counting Complete! 🎉"; // Add completion message
+                        playAlarm(); // Play the alarm sound after counting completes
+                    }
+                }, 1000); // Update every 1 second
+            } else {
+                countResult.innerHTML = "<p>Please enter a valid number.</p>";
+            }
+        }
+    </script>
+</body>
+
+</html>
